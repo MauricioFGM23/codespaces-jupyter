@@ -11,5 +11,5 @@ def extract_all_zips_in_folder(folder_path):
             print(f"Extraiu {file_name}")
 
 if __name__ == "__main__":
-    folder_path = "/workspaces/codespaces-jupyter/RPISpider/downloads"  # Substitua pelo caminho da pasta que contém os arquivos .zip
+    folder_path = "/workspaces/codespaces-jupyter/RPISpider/downloads" 
     extract_all_zips_in_folder(folder_path)
