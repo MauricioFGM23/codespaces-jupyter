@@ -15,7 +15,7 @@ def dados_arquivos(caminho_arquivo):
     texto_bloco = ""
 
     # Abrir o arquivo "Resultados.txt" em modo de append (adicionar)
-    with open("/workspaces/codespaces-jupyter/RPISpider/resultados/Resultados.txt", "a", encoding="utf-8") as resultados_arquivo:
+    with open("Resultados.txt", "a", encoding="utf-8") as resultados_arquivo:
         # Percorrer todas as linhas do arquivo
         for linha in linhas:
             if linha.startswith("(21)"):
@@ -39,15 +39,23 @@ def dados_arquivos(caminho_arquivo):
 
     print("Os dados foram gravados em 'Resultados.txt'.\n")
 
+dados_arquivos("/workspaces/codespaces-jupyter/RPISpider/downloads/P2709.txt"
 
-if __name__ == "__main__":
-
-    
-    pasta = "/workspaces/codespaces-jupyter/RPISpider/downloads"
+exit()
+def aplicar_funcao_em_arquivos_txt(pasta):
+    # Lista todos os arquivos no diretório informado.
     arquivos = [arquivo for arquivo in os.listdir(pasta) if arquivo.endswith('.txt')]
 
-        # Aplica a função em cada arquivo .txt encontrado.
+    # Aplica a função em cada arquivo .txt encontrado.
     for arquivo in arquivos:
         caminho_arquivo = os.path.join(pasta, arquivo)
         print(f"Lendo o arquivo: {arquivo}")
         dados_arquivos(caminho_arquivo)
+
+if __name__ == "__main__":
+
+    pasta = "/workspaces/codespaces-jupyter/RPISpider/downloads/"
+    aplicar_funcao_em_arquivos_txt(pasta)
+    #print(dados)
+
+    

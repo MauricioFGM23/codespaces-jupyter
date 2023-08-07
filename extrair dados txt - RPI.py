@@ -1,44 +1,57 @@
 from unidecode import unidecode
+import os
 
-def find_and_extract_info(filename):
-    # Lista para armazenar as informações encontradas
-    extracted_info = []
+dados = []
+def dados_arquivos(caminho_arquivo):
+    # Abrir o arquivo txt
+    with open(caminho_arquivo, "r", encoding="utf-8") as arquivo:
+        # Ler todas as linhas do arquivo
+        print(f"Conteúdo do arquivo '{caminho_arquivo}': \n")
+        linhas = arquivo.readlines()
 
-    # Indicadores que queremos buscar
-    indicators = ["(21)", "(22)", "(71)", "(co)", "(Cd)"]
+    # Variável para indicar se estamos dentro de um bloco de texto com "(21)"
+    dentro_do_bloco = False
 
-    with open(filename, 'r', encoding='utf-8') as file:
-        lines = file.readlines()
+    # Variável para armazenar o texto do bloco atual
+    texto_bloco = ""
 
-        i = 0
-        while i < len(lines):
-            line = lines[i]
-            # Verifica se a linha contém o trecho "UNIVERSIDADE DE BRASILIA" ou "UNIVERSIDADE DE BRASÍLIA" (insensível a acentos)
-            if "UNIVERSIDADE DE BRASILIA" in unidecode(line).upper():
-                # Verifica as linhas próximas, anteriores e posteriores
-                for offset in range(-2, 3):  # Vasculha 2 linhas antes e 2 linhas depois
-                    index = i + offset
-                    if 0 <= index < len(lines):
-                        # Verifica cada um dos indicadores e extrai as informações se encontrados
-                        
-                        for indicator in indicators:
-                            if lines[index].startswith(indicator):
-                                extracted_info.append(lines[index].strip())
-                                break  # Se encontrou um indicador, não é necessário continuar procurando
+    # Percorrer todas as linhas do arquivo
+    for linha in linhas:
+        if linha.startswith("(21)"):
+            # Se encontrarmos um novo bloco, verificamos se o texto anterior possui "UNIVERSIDADE DE BRASÍLIA"
+            if dentro_do_bloco and "UNIVERSIDADE DE BRASILIA" in unidecode(texto_bloco).upper():
+                dados.append(texto_bloco)
+            
+            # Reiniciamos o texto do bloco e marcamos que estamos dentro de um novo bloco
+            dentro_do_bloco = True
+            texto_bloco = linha
+        else:
+            # Se estivermos dentro de um bloco, continuamos a acumular o texto
+            if dentro_do_bloco:
+                texto_bloco += linha
 
-                # Atualiza o valor de i para pular as próximas linhas já que já foram verificadas
-                i += 4
+    # Verificamos o último bloco após sair do loop
+    if dentro_do_bloco and "UNIVERSIDADE DE BRASILIA" in unidecode(texto_bloco).upper():
+        dados.append(texto_bloco)
 
-            i += 1
+    # Imprimimos os dados encontrados
+    for bloco in dados:
+        print(bloco.strip(),"\n")  # strip() para remover espaços em branco extras (quebras de linha)
+    print ("\n")
+    return dados
 
-    return extracted_info
+def aplicar_funcao_em_arquivos_txt(pasta):
+    # Lista todos os arquivos no diretório informado.
+    arquivos = [arquivo for arquivo in os.listdir(pasta) if arquivo.endswith('.txt')]
 
-# Nome do arquivo txt
-FILENAME  = '/workspaces/codespaces-jupyter/RPISpider/downloads/P2710.txt'
+    # Aplica a função em cada arquivo .txt encontrado.
+    for arquivo in arquivos:
+        caminho_arquivo = os.path.join(pasta, arquivo)
+        print(f"Lendo o arquivo: {arquivo}")
+        dados_arquivos(caminho_arquivo)
 
-# Chama a função e obtém as informações encontradas
-informations = find_and_extract_info(FILENAME)
+if __name__ == "__main__":
 
-# Imprime as informações
-for info in informations:
-    print(info)
+    pasta = "/workspaces/codespaces-jupyter/RPISpider/downloads/"
+    aplicar_funcao_em_arquivos_txt(pasta)
+    #print(dados)
