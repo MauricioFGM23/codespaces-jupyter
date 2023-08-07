@@ -1,7 +1,6 @@
-from unidecode import unidecode
+from unidecode import unidecode  # Certifique-se de ter o pacote 'unidecode' instalado
 import os
 
-dados = []
 def dados_arquivos(caminho_arquivo):
     # Abrir o arquivo txt
     with open(caminho_arquivo, "r", encoding="utf-8") as arquivo:
@@ -15,43 +14,40 @@ def dados_arquivos(caminho_arquivo):
     # Variável para armazenar o texto do bloco atual
     texto_bloco = ""
 
-    # Percorrer todas as linhas do arquivo
-    for linha in linhas:
-        if linha.startswith("(21)"):
-            # Se encontrarmos um novo bloco, verificamos se o texto anterior possui "UNIVERSIDADE DE BRASÍLIA"
-            if dentro_do_bloco and "UNIVERSIDADE DE BRASILIA" in unidecode(texto_bloco).upper():
-                dados.append(texto_bloco)
+    # Abrir o arquivo "Resultados.txt" em modo de append (adicionar)
+    with open("/workspaces/codespaces-jupyter/RPISpider/resultados/Resultados.txt", "a", encoding="utf-8") as resultados_arquivo:
+        # Percorrer todas as linhas do arquivo
+        for linha in linhas:
+            if linha.startswith("(21)"):
+                # Se encontrarmos um novo bloco, verificamos se o texto anterior possui "UNIVERSIDADE DE BRASILIA"
+                if dentro_do_bloco and "UNIVERSIDADE DE BRASILIA" in unidecode(texto_bloco).upper():
+                    # Gravamos o texto do bloco no arquivo "Resultados.txt"
+                    resultados_arquivo.write(texto_bloco)
+
+                # Reiniciamos o texto do bloco e marcamos que estamos dentro de um novo bloco
+                dentro_do_bloco = True
+                texto_bloco = linha
+            else:
+                # Se estivermos dentro de um bloco, continuamos a acumular o texto
+                if dentro_do_bloco:
+                    texto_bloco += linha
+            print(texto_bloco)
+        # Verificamos o último bloco após sair do loop
+        if dentro_do_bloco and "UNIVERSIDADE DE BRASILIA" in unidecode(texto_bloco).upper():
+            # Gravamos o último bloco no arquivo "Resultados.txt"
             
-            # Reiniciamos o texto do bloco e marcamos que estamos dentro de um novo bloco
-            dentro_do_bloco = True
-            texto_bloco = linha
-        else:
-            # Se estivermos dentro de um bloco, continuamos a acumular o texto
-            if dentro_do_bloco:
-                texto_bloco += linha
+            resultados_arquivo.write(texto_bloco)
 
-    # Verificamos o último bloco após sair do loop
-    if dentro_do_bloco and "UNIVERSIDADE DE BRASILIA" in unidecode(texto_bloco).upper():
-        dados.append(texto_bloco)
+    print("Os dados foram gravados em 'Resultados.txt'.\n")
 
-    # Imprimimos os dados encontrados
-    for bloco in dados:
-        print(bloco.strip(),"\n")  # strip() para remover espaços em branco extras (quebras de linha)
-    print ("\n")
-    return dados
 
-def aplicar_funcao_em_arquivos_txt(pasta):
-    # Lista todos os arquivos no diretório informado.
+if __name__ == "__main__":
+    
+    pasta = "/workspaces/codespaces-jupyter/RPISpider/downloads"
     arquivos = [arquivo for arquivo in os.listdir(pasta) if arquivo.endswith('.txt')]
 
-    # Aplica a função em cada arquivo .txt encontrado.
+        # Aplica a função em cada arquivo .txt encontrado.
     for arquivo in arquivos:
         caminho_arquivo = os.path.join(pasta, arquivo)
         print(f"Lendo o arquivo: {arquivo}")
         dados_arquivos(caminho_arquivo)
-
-if __name__ == "__main__":
-
-    pasta = "/workspaces/codespaces-jupyter/RPISpider/downloads/"
-    aplicar_funcao_em_arquivos_txt(pasta)
-    #print(dados)

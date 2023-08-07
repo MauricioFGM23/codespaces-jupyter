@@ -41,7 +41,6 @@ def dados_arquivos(caminho_arquivo):
 
 
 if __name__ == "__main__":
-
     
     pasta = "/workspaces/codespaces-jupyter/RPISpider/downloads"
     arquivos = [arquivo for arquivo in os.listdir(pasta) if arquivo.endswith('.txt')]
