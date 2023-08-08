@@ -16,9 +16,11 @@ def extrair_bloco(planilha, entrada_dados):
         elif line.startswith("(co)"):
             data_dict["(co) comentario"] = line[5:].strip()
         elif line.startswith("(Cd)"):
-            data_dict["(Cd) codigo da exigencia"] = line[5:].strip()
+            data_dict["(Cd) código da exigencia"] = line[5:].strip()
         elif line.startswith("(11)"):
             data_dict["(11) numero da patente"] = line[5:].strip()
+        elif line.startswith("(RPI) "):
+            data_dict["(RPI) numero da revista"] = line[5:].strip()
 
     try:
         # Load the existing data from the "dadosRPI.csv" file
@@ -31,5 +33,4 @@ def extrair_bloco(planilha, entrada_dados):
         df = pd.concat([df, pd.DataFrame([data_dict])], ignore_index=True)
 
     df.to_excel(planilha, index=False)
-
 
