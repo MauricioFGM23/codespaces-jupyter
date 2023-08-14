@@ -7,8 +7,8 @@ import os
 
 #intervalos de datas e diretório de download
 datainit = input("Data Inicial: ")
-datafim = input("Data Final: ")
-diretorio = input("Diretório para Download: ")
+datafim = input("Data Final:  ")
+#diretorio = input("Diretório para Download: ")
 print("Iniciando download das RPI!!!\n")
 # Adicione o caminho do chromedriver ao PATH
 os.environ["PATH"] += os.pathsep + "/usr/lib/chromium-browser/"
@@ -21,7 +21,7 @@ driver = webdriver.Chrome(options=chrome_options)
 chrome_options.add_argument("--disable-notifications") # Desativar as notificações
 chrome_options.add_argument("--incognito") # Executar em modo privado
 chrome_options.add_experimental_option("prefs", {
-  "download.default_directory": diretorio, # Definir o diretório de download
+  "download.default_directory": '/workspaces/codespaces-jupyter/RPISpider/downloads/', # Definir o diretório de download
   "download.prompt_for_download": False, # Não pedir confirmação para baixar
   "download.directory_upgrade": True,
   "safebrowsing_for_trusted_sources_enabled": False,
@@ -87,7 +87,7 @@ def excluir_arquivos_xml(diretorio):
         print("Ocorreu um erro:", e)
 
 if __name__ == "__main__":
-    diretorio_alvo = "/workspaces/codespaces-jupyter/RPISpider/downloads/" 
+    diretorio_alvo = "/workspaces/codespaces-jupyter/RPISpider/downloads/"
     extract_all_zips_in_folder(diretorio_alvo)
     excluir_arquivos_xml(diretorio_alvo)
     print("Descompressão completa!!! Fechando programa.\n")

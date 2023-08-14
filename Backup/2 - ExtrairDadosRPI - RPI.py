@@ -1,5 +1,5 @@
 from unidecode import unidecode  # Certifique-se de ter o pacote 'unidecode' instalado
-from SalvarDadosRPI import extrair_bloco
+from RPISpider.Backup.SalvarDadosRPI import extrair_bloco
 import os
 
 def dados_arquivos(caminho_arquivo):
