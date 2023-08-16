@@ -4,6 +4,8 @@ from selenium.webdriver.common.by import By
 import zipfile
 import time
 import os
+import chardet
+import codecs
 
 #intervalos de datas e diretório de download
 datainit = input("Data Inicial: ")
@@ -21,7 +23,7 @@ driver = webdriver.Chrome(options=chrome_options)
 chrome_options.add_argument("--disable-notifications") # Desativar as notificações
 chrome_options.add_argument("--incognito") # Executar em modo privado
 chrome_options.add_experimental_option("prefs", {
-  "download.default_directory": '/workspaces/codespaces-jupyter/RPISpider/downloads/', # Definir o diretório de download
+  "download.default_directory": '/workspaces/codespaces-jupyter/RPISpider/downloads2/', # Definir o diretório de download
   "download.prompt_for_download": False, # Não pedir confirmação para baixar
   "download.directory_upgrade": True,
   "safebrowsing_for_trusted_sources_enabled": False,
@@ -86,11 +88,34 @@ def excluir_arquivos_xml(diretorio):
     except Exception as e:
         print("Ocorreu um erro:", e)
 
+def convert_to_utf8(input_file, output_file):
+    # Detecta a codificação do arquivo de entrada
+    with open(input_file, 'rb') as rawdata:
+        result = chardet.detect(rawdata.read(10000))
+    input_encoding = result['encoding']
+
+    # Realiza a conversão de codificação
+    with codecs.open(input_file, 'r', encoding=input_encoding, errors='ignore') as source_file:
+        content = source_file.read()
+    
+    with codecs.open(output_file, 'w', encoding='utf-8') as target_file:
+        target_file.write(content)
+
+# Substitua o caminho da pasta de entrada conforme necessário
+
 if __name__ == "__main__":
-    diretorio_alvo = "/workspaces/codespaces-jupyter/RPISpider/downloads/"
+    diretorio_alvo = "/workspaces/codespaces-jupyter/RPISpider/downloads4/"
     extract_all_zips_in_folder(diretorio_alvo)
     excluir_arquivos_xml(diretorio_alvo)
-    print("Descompressão completa!!! Fechando programa.\n")
+    print("\nDescompressão completa!!! Fechando programa.\n")
+    print('Iniciando conversão de codificação para utf-8!!!\n')
+    for filename in os.listdir(diretorio_alvo):
+        if filename.endswith('.txt'):
+            input_file_path = os.path.join(diretorio_alvo, filename)
+            output_file_path = os.path.join(diretorio_alvo, filename)  # Mesmo nome de arquivo
+            print(f"Convertendo o arquivo: {filename}")
+            convert_to_utf8(input_file_path, output_file_path)
+    print ("Conversão de condificação concluída!!!\n")
 
 
 exit()
